@@ -1,0 +1,32 @@
+version: "3"
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    command: [nginx-debug, "-g", "daemon off;"]
+    ports:
+      - "80:80"
+    volumes:
+      - ./code:/code
+      - ./site.conf:/etc/nginx/conf.d/site.conf
+  php:
+    image: php:7.3-fpm
+    container_name: php
+    working_dir: /code
+    volumes:
+      - ./code:/code
+  db:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: root
+  composer:
+    restart: "no"
+    image: composer:latest
+    container_name: composer
+    working_dir: /code
+    command: install
+    volumes:
+      - ./code:/code
